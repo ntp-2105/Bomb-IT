@@ -1,6 +1,10 @@
 # Bomb-It Browser Game — Technology Stack
 
+> Initial stack proposal. The first-release scope and module layout are defined in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md). React, accounts, PostgreSQL, Redis, and leaderboard work below are conditional later features; they are not required for the first multiplayer release.
+
 ## 1. Architecture
+
+The diagram in this section is a possible later state. The first release uses the browser client and Java server without PostgreSQL or Redis; see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ```text
                          Browser
@@ -479,6 +483,8 @@ Java
 
 # 12. Development Roadmap
 
+This original roadmap has been superseded by [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
+
 ## Phase 1 — Understand Existing Game
 
 Study the current Java/libGDX implementation:
@@ -570,6 +576,8 @@ for:
 ---
 
 # Final Architecture
+
+This is an aspirational later architecture. The first-release runtime is defined in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ```text
                          INTERNET

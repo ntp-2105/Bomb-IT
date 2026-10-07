@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: bomb-it-server
+
+server:
+  port: 8080

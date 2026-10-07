@@ -1,0 +1,33 @@
+# Gradle and Java
+.gradle/
+build/
+**/build/
+*.class
+
+# Node and browser build output
+node_modules/
+client-web/dist/
+npm-debug.log*
+
+# IDE and local environment
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example
+
+# Terraform local data, state, plans, and crash output
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+terraform.rc
+.terraformrc
+
+# Local run data and generated evidence
+ops/data/
+tests/results/raw/
