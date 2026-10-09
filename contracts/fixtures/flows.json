@@ -206,6 +206,14 @@
       }
     }
   },
+  "duplicateAndOutOfOrderEvents": {
+    "snapshotFixture": "replay.initial",
+    "deliveredEventIndexes": [0, 0, 2, 1],
+    "sequenceAfterFirst": 6,
+    "expectedResync": true,
+    "replacementFixture": "replay.expected",
+    "postSnapshotDuplicateIndex": 5
+  },
   "reconnect": {
     "retainedForMs": 30000,
     "sameGuestJoin": {

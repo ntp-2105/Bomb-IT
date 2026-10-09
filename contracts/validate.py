@@ -201,6 +201,19 @@ def check_flows() -> None:
     assert gap["replacementSnapshot"]["sequence"] >= gap["received"]["sequence"]
     assert gap["replacementSnapshot"]["payload"]["bombs"] == [gap["received"]["payload"]["bomb"]]
 
+    delivery = flows["duplicateAndOutOfOrderEvents"]
+    assert delivery["snapshotFixture"] == "replay.initial"
+    assert delivery["replacementFixture"] == "replay.expected"
+    replay = json.loads((ROOT / "fixtures/replay.json").read_text(encoding="utf-8"))
+    delivered = [replay["events"][index] for index in delivery["deliveredEventIndexes"]]
+    for event in delivered:
+        assert_valid("websocket/server", event)
+    assert [event["sequence"] for event in delivered] == [6, 6, 8, 7]
+    assert delivery["sequenceAfterFirst"] == delivered[0]["sequence"]
+    assert delivery["expectedResync"] is True
+    assert_valid("websocket/server", replay["expected"])
+    assert replay["events"][delivery["postSnapshotDuplicateIndex"]]["sequence"] <= replay["expected"]["sequence"]
+
     reconnect = flows["reconnect"]
     assert reconnect["retainedForMs"] == 30000
     assert_valid("websocket/client", reconnect["sameGuestJoin"])
@@ -248,7 +261,7 @@ def main() -> None:
     check_flows()
     print(
         f"v1 contract valid: {valid} valid fixtures, {invalid} invalid fixtures, "
-        f"{examples} document examples, {deltas} replay deltas, 7 flows"
+        f"{examples} document examples, {deltas} replay deltas, 8 flows"
     )
 
 
