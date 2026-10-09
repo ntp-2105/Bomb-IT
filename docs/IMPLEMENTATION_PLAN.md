@@ -1,6 +1,6 @@
 # Step-by-step implementation plan
 
-Status: proposed plan, 7 October 2026. This plan implements the browser/Java direction in `CONTRACT.md` and the operational outcomes in `PROJECT_ROADMAP.md`. The repository has only build/client skeletons and README placeholders; game behavior and operations remain future work. [Architecture and module responsibilities](ARCHITECTURE.md) define the target structure.
+Status: proposed plan, 7 October 2026. This plan implements the browser/Java direction in `CONTRACT.md` and the operational outcomes in `PROJECT_ROADMAP.md`. The repository has build/client skeletons and the v1 contract package; game behavior and operations remain future work. [Architecture and module responsibilities](ARCHITECTURE.md) define the target structure.
 
 ## Outcome and estimates
 

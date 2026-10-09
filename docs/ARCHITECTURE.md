@@ -1,12 +1,12 @@
 # Repository and runtime architecture
 
-Status: proposed target structure, 7 October 2026. The repository now has a minimal Java and browser scaffold plus README placeholders for planned areas. No game rules, protocol schemas, infrastructure resources, CI workflows, or tests are implemented. No original game source or assets have been audited here.
+Status: proposed target structure, 7 October 2026. The repository has a minimal Java and browser scaffold and a v1 contract package with schemas and fixtures. Game/server behavior, infrastructure resources, CI workflows, and integration tests are not implemented. No original game source or assets have been audited here.
 
 ## Decision and scope
 
 `CONTRACT.md` defines a browser client using TypeScript and Phaser with a Java/Spring Boot server. This architecture makes that browser client part of the first playable release. The client uses Vite and a small DOM lobby; React is optional after the multiplayer release. The server is authoritative. The first release uses guest sessions, one map, room codes, 2–4 players, in-memory matches, and one EC2 instance. It has no account database, leaderboard, Redis, or multi-node routing.
 
-`CONTRACT.md` is the current descriptive contract and still lists account and leaderboard endpoints. The first release scope below is a proposed amendment; no implementation of that changed scope starts until the contract explicitly marks those endpoints as future and defines guest sessions. Convert the MVP wire subset to machine-readable schemas and update the document so examples and schemas agree. The schemas become the source of truth for network fields; Java and TypeScript implementation classes remain independent.
+`CONTRACT.md` now defines the normative v1 guest-first wire behavior. `contracts/openapi.yaml`, the WebSocket and game JSON Schemas, and fixtures define the wire fields and examples. Java and TypeScript implementation classes remain independent. Accounts and leaderboard are explicitly future scope.
 
 ## Runtime view
 
@@ -124,7 +124,7 @@ flowchart LR
 
 ## First-release network contract
 
-Proposed MVP REST: `POST /api/guest-sessions`, `POST /api/games`, and `GET /api/games/{gameId}`. WebSocket: `/ws` with `JOIN_GAME`, `LEAVE_GAME`, `READY`, `PLAYER_MOVE`, and `PLACE_BOMB`. Events: the minimal set in `CONTRACT.md` section 40, plus `GAME_STATE` snapshot and typed `ERROR`. The contract revision must add the guest endpoint and mark login, `/api/users/me`, and leaderboard examples as future scope.
+V1 REST is `POST /api/guest-sessions`, `POST /api/games`, and `GET /api/games/{gameId}`. WebSocket `/ws` uses `JOIN_GAME`, `LEAVE_GAME`, `READY`, `PLAYER_MOVE`, `PLACE_BOMB`, and `RESYNC`. The exact commands, events, snapshots, errors, and rules are specified in `CONTRACT.md` and the schemas under `contracts/`.
 
 The v1 envelope needs `version`, `type`, and `payload`; commands also carry `requestId`. A success acknowledgement or correlated event answers each accepted command; typed errors correlate rejected commands. The server remembers a bounded set of recent request IDs per session and returns the previous outcome for a retry instead of applying it twice. Events and snapshots carry a monotonic room sequence or tick number. On a missing sequence or reconnect, the client receives a full snapshot before applying further deltas; duplicate or out-of-order events cannot corrupt local state. Server wall-clock timestamps remain in events for diagnostics, not ordering authority. The schema must define draw results, map cells in snapshots, integer coordinate bounds, unknown-field handling, and status transitions.
 

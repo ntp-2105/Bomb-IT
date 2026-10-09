@@ -1,0 +1,337 @@
+{
+  "cases": [
+    {
+      "name": "new guest response",
+      "schema": "rest/GuestSession",
+      "value": {
+        "playerId": "p1",
+        "expiresAtMs": 1790086400000
+      }
+    },
+    {
+      "name": "create two-player room",
+      "schema": "rest/CreateGame",
+      "value": {
+        "maxPlayers": 2
+      }
+    },
+    {
+      "name": "room lookup and create response",
+      "schema": "rest/RoomSummary",
+      "value": {
+        "gameId": "ABCD2345",
+        "status": "WAITING",
+        "maxPlayers": 2,
+        "players": [
+          {
+            "playerId": "p1",
+            "slot": 1,
+            "ready": false,
+            "connected": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "expired guest HTTP error",
+      "schema": "rest/Error",
+      "value": {
+        "code": "UNAUTHORIZED",
+        "message": "Guest session expired."
+      }
+    },
+    {
+      "name": "canonical map",
+      "schema": "game/Map",
+      "value": {
+        "mapId": "classic-01",
+        "rows": [
+          "###############",
+          "#.....+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.+...+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.+...+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.+...+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.+...+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.....+...+...#",
+          "###############"
+        ]
+      }
+    },
+    {
+      "name": "join by room code",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "JOIN_GAME",
+        "requestId": "r1",
+        "payload": {
+          "gameId": "ABCD2345"
+        }
+      }
+    },
+    {
+      "name": "ready",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "READY",
+        "requestId": "r2",
+        "payload": {}
+      }
+    },
+    {
+      "name": "held movement",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_MOVE",
+        "requestId": "r3",
+        "payload": {
+          "direction": "UP"
+        }
+      }
+    },
+    {
+      "name": "held movement refresh",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_MOVE",
+        "requestId": "r4",
+        "payload": {
+          "direction": "UP"
+        }
+      }
+    },
+    {
+      "name": "release movement",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_MOVE",
+        "requestId": "r5",
+        "payload": {
+          "direction": null
+        }
+      }
+    },
+    {
+      "name": "plant bomb",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "PLACE_BOMB",
+        "requestId": "r6",
+        "payload": {}
+      }
+    },
+    {
+      "name": "request resync",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "RESYNC",
+        "requestId": "r7",
+        "payload": {}
+      }
+    },
+    {
+      "name": "leave room",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "LEAVE_GAME",
+        "requestId": "r8",
+        "payload": {}
+      }
+    },
+    {
+      "name": "accepted join",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "ACK",
+        "requestId": "r1",
+        "serverTimeMs": 1790000000000,
+        "payload": {
+          "commandType": "JOIN_GAME",
+          "appliedTick": 0
+        }
+      }
+    },
+    {
+      "name": "expired guest WebSocket error",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "ERROR",
+        "requestId": "r9",
+        "serverTimeMs": 1790000000000,
+        "payload": {
+          "code": "UNAUTHORIZED",
+          "message": "Guest session expired."
+        }
+      }
+    },
+    {
+      "name": "request ID conflict",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "ERROR",
+        "requestId": "r6",
+        "serverTimeMs": 1790000000000,
+        "payload": {
+          "code": "REQUEST_ID_CONFLICT",
+          "message": "Request ID was already used."
+        }
+      }
+    },
+    {
+      "name": "room start",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "GAME_STARTED",
+        "gameId": "ABCD2345",
+        "sequence": 4,
+        "tick": 0,
+        "serverTimeMs": 1790000000000,
+        "payload": {
+          "startedAtTick": 0
+        }
+      }
+    },
+    {
+      "name": "player joins",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_JOINED",
+        "gameId": "ABCD2345",
+        "sequence": 1,
+        "tick": 0,
+        "serverTimeMs": 1790000000000,
+        "payload": {
+          "player": {
+            "playerId": "p2",
+            "slot": 2,
+            "x": 13,
+            "y": 1,
+            "ready": false,
+            "connected": true,
+            "alive": true
+          }
+        }
+      }
+    },
+    {
+      "name": "player ready",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_READY_CHANGED",
+        "gameId": "ABCD2345",
+        "sequence": 2,
+        "tick": 0,
+        "serverTimeMs": 1790000000000,
+        "payload": {
+          "playerId": "p1",
+          "ready": true
+        }
+      }
+    },
+    {
+      "name": "player disconnects",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_CONNECTION_CHANGED",
+        "gameId": "ABCD2345",
+        "sequence": 3,
+        "tick": 0,
+        "serverTimeMs": 1790000000000,
+        "payload": {
+          "playerId": "p1",
+          "connected": false
+        }
+      }
+    },
+    {
+      "name": "player leaves waiting room",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_LEFT",
+        "gameId": "ABCD2345",
+        "sequence": 5,
+        "tick": 0,
+        "serverTimeMs": 1790000000000,
+        "payload": {
+          "playerId": "p2"
+        }
+      }
+    },
+    {
+      "name": "all eliminated draw",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "GAME_FINISHED",
+        "gameId": "ABCD2345",
+        "sequence": 19,
+        "tick": 240,
+        "serverTimeMs": 1790000012000,
+        "payload": {
+          "result": {
+            "outcome": "DRAW",
+            "winnerId": null,
+            "reason": "ALL_ELIMINATED",
+            "finishedAtTick": 240
+          }
+        }
+      }
+    },
+    {
+      "name": "time limit draw",
+      "schema": "game/Result",
+      "value": {
+        "outcome": "DRAW",
+        "winnerId": null,
+        "reason": "TIME_LIMIT",
+        "finishedAtTick": 3600
+      }
+    },
+    {
+      "name": "second chained bomb explosion",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "BOMB_EXPLODED",
+        "gameId": "ABCD2345",
+        "sequence": 9,
+        "tick": 61,
+        "serverTimeMs": 1790000003050,
+        "payload": {
+          "bombId": "b2",
+          "affectedCells": [
+            {
+              "x": 1,
+              "y": 3
+            },
+            {
+              "x": 2,
+              "y": 3
+            }
+          ],
+          "visualUntilTick": 67
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,924 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bomb-it.example/contracts/v1/websocket/messages.schema.json",
+  "title": "Bomb-It v1 WebSocket messages",
+  "$defs": {
+    "ClientMessage": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "requestId",
+            "payload"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "JOIN_GAME"
+            },
+            "requestId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "gameId"
+              ],
+              "properties": {
+                "gameId": {
+                  "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "requestId",
+            "payload"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "LEAVE_GAME"
+            },
+            "requestId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "payload": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "requestId",
+            "payload"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "READY"
+            },
+            "requestId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "payload": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "requestId",
+            "payload"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "PLAYER_MOVE"
+            },
+            "requestId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "direction"
+              ],
+              "properties": {
+                "direction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "UP",
+                    "DOWN",
+                    "LEFT",
+                    "RIGHT",
+                    null
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "requestId",
+            "payload"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "PLACE_BOMB"
+            },
+            "requestId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "payload": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "requestId",
+            "payload"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "RESYNC"
+            },
+            "requestId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "payload": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ServerMessage": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "requestId",
+            "serverTimeMs",
+            "payload"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "ACK"
+            },
+            "requestId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "commandType",
+                "appliedTick"
+              ],
+              "properties": {
+                "commandType": {
+                  "enum": [
+                    "JOIN_GAME",
+                    "LEAVE_GAME",
+                    "READY",
+                    "PLAYER_MOVE",
+                    "PLACE_BOMB",
+                    "RESYNC"
+                  ]
+                },
+                "appliedTick": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "requestId",
+            "serverTimeMs",
+            "payload"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "ERROR"
+            },
+            "requestId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "enum": [
+                    "INVALID_COMMAND",
+                    "INVALID_REQUEST",
+                    "UNSUPPORTED_VERSION",
+                    "UNAUTHORIZED",
+                    "GAME_NOT_FOUND",
+                    "GAME_FULL",
+                    "GAME_NOT_JOINABLE",
+                    "PLAYER_NOT_IN_GAME",
+                    "PLAYER_ALREADY_IN_GAME",
+                    "PLAYER_DEAD",
+                    "INVALID_MOVEMENT",
+                    "BOMB_PLACEMENT_NOT_ALLOWED",
+                    "GAME_NOT_STARTED",
+                    "GAME_ALREADY_FINISHED",
+                    "REQUEST_ID_CONFLICT",
+                    "RATE_LIMITED",
+                    "SERVER_CAPACITY"
+                  ]
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "GAME_STATE"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/State"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload",
+            "tick"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "PLAYER_JOINED"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "player"
+              ],
+              "properties": {
+                "player": {
+                  "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/Player"
+                }
+              },
+              "additionalProperties": false
+            },
+            "tick": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload",
+            "tick"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "PLAYER_LEFT"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "playerId"
+              ],
+              "properties": {
+                "playerId": {
+                  "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/OpaqueId"
+                }
+              },
+              "additionalProperties": false
+            },
+            "tick": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload",
+            "tick"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "PLAYER_READY_CHANGED"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "playerId",
+                "ready"
+              ],
+              "properties": {
+                "playerId": {
+                  "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/OpaqueId"
+                },
+                "ready": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "tick": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload",
+            "tick"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "PLAYER_CONNECTION_CHANGED"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "playerId",
+                "connected"
+              ],
+              "properties": {
+                "playerId": {
+                  "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/OpaqueId"
+                },
+                "connected": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "tick": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload",
+            "tick"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "GAME_STARTED"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "startedAtTick"
+              ],
+              "properties": {
+                "startedAtTick": {
+                  "const": 0
+                }
+              },
+              "additionalProperties": false
+            },
+            "tick": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload",
+            "tick"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "PLAYER_MOVED"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "playerId",
+                "x",
+                "y"
+              ],
+              "properties": {
+                "playerId": {
+                  "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/OpaqueId"
+                },
+                "x": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 14
+                },
+                "y": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 12
+                }
+              },
+              "additionalProperties": false
+            },
+            "tick": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload",
+            "tick"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "BOMB_PLACED"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "bomb"
+              ],
+              "properties": {
+                "bomb": {
+                  "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/Bomb"
+                }
+              },
+              "additionalProperties": false
+            },
+            "tick": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload",
+            "tick"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "BOMB_EXPLODED"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "bombId",
+                "affectedCells",
+                "visualUntilTick"
+              ],
+              "properties": {
+                "bombId": {
+                  "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/OpaqueId"
+                },
+                "affectedCells": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/Coordinate"
+                  }
+                },
+                "visualUntilTick": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": false
+            },
+            "tick": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload",
+            "tick"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "CELL_DESTROYED"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/Coordinate"
+            },
+            "tick": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload",
+            "tick"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "PLAYER_DIED"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "playerId",
+                "reason"
+              ],
+              "properties": {
+                "playerId": {
+                  "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/OpaqueId"
+                },
+                "reason": {
+                  "enum": [
+                    "BLAST",
+                    "FORFEIT"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "tick": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "version",
+            "type",
+            "gameId",
+            "sequence",
+            "serverTimeMs",
+            "payload",
+            "tick"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "type": {
+              "const": "GAME_FINISHED"
+            },
+            "gameId": {
+              "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/GameId"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "serverTimeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload": {
+              "type": "object",
+              "required": [
+                "result"
+              ],
+              "properties": {
+                "result": {
+                  "$ref": "https://bomb-it.example/contracts/v1/game/state.schema.json#/$defs/Result"
+                }
+              },
+              "additionalProperties": false
+            },
+            "tick": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

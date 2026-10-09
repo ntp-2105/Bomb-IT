@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bomb-it.example/contracts/v1/game/state.schema.json",
+  "title": "Bomb-It v1 game state",
+  "$defs": {
+    "GameId": {
+      "type": "string",
+      "pattern": "^[A-HJKMNP-TV-Z2-9]{8}$"
+    },
+    "OpaqueId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "Coordinate": {
+      "type": "object",
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "integer", "minimum": 0, "maximum": 14 },
+        "y": { "type": "integer", "minimum": 0, "maximum": 12 }
+      },
+      "additionalProperties": false
+    },
+    "Config": {
+      "type": "object",
+      "required": ["gridWidth", "gridHeight", "tickMs", "movementTicks", "bombFuseTicks", "explosionRange", "maxBombs", "blastVisualTicks", "matchDurationTicks"],
+      "properties": {
+        "gridWidth": { "const": 15 },
+        "gridHeight": { "const": 13 },
+        "tickMs": { "const": 50 },
+        "movementTicks": { "const": 3 },
+        "bombFuseTicks": { "const": 60 },
+        "explosionRange": { "const": 2 },
+        "maxBombs": { "const": 3 },
+        "blastVisualTicks": { "const": 6 },
+        "matchDurationTicks": { "const": 3600 }
+      },
+      "additionalProperties": false
+    },
+    "Map": {
+      "type": "object",
+      "required": ["mapId", "rows"],
+      "properties": {
+        "mapId": { "const": "classic-01" },
+        "rows": {
+          "type": "array",
+          "minItems": 13,
+          "maxItems": 13,
+          "items": { "type": "string", "pattern": "^[#+.]{15}$" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Player": {
+      "type": "object",
+      "required": ["playerId", "slot", "x", "y", "alive", "ready", "connected"],
+      "properties": {
+        "playerId": { "$ref": "#/$defs/OpaqueId" },
+        "slot": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "x": { "type": "integer", "minimum": 0, "maximum": 14 },
+        "y": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "alive": { "type": "boolean" },
+        "ready": { "type": "boolean" },
+        "connected": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "Bomb": {
+      "type": "object",
+      "required": ["bombId", "ownerId", "x", "y", "explodeAtTick", "range"],
+      "properties": {
+        "bombId": { "$ref": "#/$defs/OpaqueId" },
+        "ownerId": { "$ref": "#/$defs/OpaqueId" },
+        "x": { "type": "integer", "minimum": 0, "maximum": 14 },
+        "y": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "explodeAtTick": { "type": "integer", "minimum": 0 },
+        "range": { "const": 2 }
+      },
+      "additionalProperties": false
+    },
+    "Result": {
+      "type": "object",
+      "required": ["outcome", "winnerId", "reason", "finishedAtTick"],
+      "properties": {
+        "outcome": { "enum": ["WIN", "DRAW"] },
+        "winnerId": {
+          "oneOf": [
+            { "$ref": "#/$defs/OpaqueId" },
+            { "type": "null" }
+          ]
+        },
+        "reason": { "enum": ["SOLE_SURVIVOR", "ALL_ELIMINATED", "TIME_LIMIT"] },
+        "finishedAtTick": { "type": "integer", "minimum": 0, "maximum": 3600 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "outcome": { "const": "WIN" } }, "required": ["outcome"] },
+          "then": {
+            "properties": {
+              "winnerId": { "$ref": "#/$defs/OpaqueId" },
+              "reason": { "const": "SOLE_SURVIVOR" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "outcome": { "const": "DRAW" } }, "required": ["outcome"] },
+          "then": {
+            "properties": {
+              "winnerId": { "type": "null" },
+              "reason": { "enum": ["ALL_ELIMINATED", "TIME_LIMIT"] }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "State": {
+      "type": "object",
+      "required": ["gameId", "status", "maxPlayers", "config", "map", "players", "bombs", "tick", "result"],
+      "properties": {
+        "gameId": { "$ref": "#/$defs/GameId" },
+        "status": { "enum": ["WAITING", "RUNNING", "FINISHED"] },
+        "maxPlayers": { "type": "integer", "minimum": 2, "maximum": 4 },
+        "config": { "$ref": "#/$defs/Config" },
+        "map": { "$ref": "#/$defs/Map" },
+        "players": {
+          "type": "array",
+          "maxItems": 4,
+          "items": { "$ref": "#/$defs/Player" }
+        },
+        "bombs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Bomb" }
+        },
+        "tick": { "type": "integer", "minimum": 0, "maximum": 3600 },
+        "result": {
+          "oneOf": [
+            { "$ref": "#/$defs/Result" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "FINISHED" } }, "required": ["status"] },
+          "then": { "properties": { "result": { "$ref": "#/$defs/Result" } } },
+          "else": { "properties": { "result": { "type": "null" } } }
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/State"
+}

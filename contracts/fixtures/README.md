@@ -1,3 +1,3 @@
 # Contract Fixtures
 
-Reserved for representative payload fixtures used to document or validate API, WebSocket, and game contracts. Fixtures should contain synthetic data only.
+Synthetic v1 fixtures include valid and invalid wire cases, the fixed map, a snapshot/delta replay, and retry/reconnect flows. Run `python contracts/validate.py` from the repository root.

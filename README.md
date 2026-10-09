@@ -2,7 +2,7 @@
 
 A browser multiplayer game backed by a Java server. The first release targets one map, 2–4 guest players, room codes, server-authoritative rules, and a single AWS EC2 deployment. Active matches are held in memory and end if the game process stops.
 
-This repository is currently being scaffolded. Game rules, networking, deployment automation, and AWS resources are not implemented yet.
+This repository is currently being scaffolded. The v1 wire contract, schemas, fixtures, and validator are present; game rules, networking, deployment automation, and AWS resources are not implemented yet.
 
 ## Project documents
 

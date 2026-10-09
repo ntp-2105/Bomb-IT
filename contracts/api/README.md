@@ -1,3 +1,3 @@
 # API Contract
 
-Reserved for HTTP API contract definitions shared by the client and server. Keep endpoint shapes and compatibility expectations here; implementation belongs in the owning application modules.
+The v1 HTTP API is defined in `../openapi.yaml`. This folder remains available for future API-specific contract material.

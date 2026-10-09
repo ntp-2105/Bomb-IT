@@ -1,0 +1,230 @@
+{
+  "cases": [
+    {
+      "name": "missing protocol version",
+      "schema": "websocket/client",
+      "value": {
+        "type": "PLAYER_MOVE",
+        "requestId": "r3",
+        "payload": {
+          "direction": "UP"
+        }
+      }
+    },
+    {
+      "name": "unsupported protocol version",
+      "schema": "websocket/client",
+      "value": {
+        "version": 2,
+        "type": "PLAYER_MOVE",
+        "requestId": "r3",
+        "payload": {
+          "direction": "UP"
+        }
+      }
+    },
+    {
+      "name": "spoofed player ID field",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_MOVE",
+        "requestId": "r3",
+        "payload": {
+          "direction": "UP"
+        },
+        "playerId": "p1"
+      }
+    },
+    {
+      "name": "unknown direction",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_MOVE",
+        "requestId": "r3",
+        "payload": {
+          "direction": "NORTH"
+        }
+      }
+    },
+    {
+      "name": "invalid request ID",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_MOVE",
+        "requestId": "bad space",
+        "payload": {
+          "direction": "UP"
+        }
+      }
+    },
+    {
+      "name": "authoritative position in input",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_MOVE",
+        "requestId": "r3",
+        "payload": {
+          "direction": "UP",
+          "x": 999
+        }
+      }
+    },
+    {
+      "name": "bad room code",
+      "schema": "websocket/client",
+      "value": {
+        "version": 1,
+        "type": "JOIN_GAME",
+        "requestId": "j1",
+        "payload": {
+          "gameId": "INVALID0"
+        }
+      }
+    },
+    {
+      "name": "event missing tick",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_MOVED",
+        "gameId": "ABCD2345",
+        "sequence": 6,
+        "serverTimeMs": 1790000000000,
+        "payload": {
+          "playerId": "p1",
+          "x": 1,
+          "y": 3
+        }
+      }
+    },
+    {
+      "name": "negative sequence",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_MOVED",
+        "gameId": "ABCD2345",
+        "sequence": -1,
+        "tick": 1,
+        "serverTimeMs": 1790000000000,
+        "payload": {
+          "playerId": "p1",
+          "x": 1,
+          "y": 3
+        }
+      }
+    },
+    {
+      "name": "out of bounds event coordinate",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "PLAYER_MOVED",
+        "gameId": "ABCD2345",
+        "sequence": 6,
+        "tick": 1,
+        "serverTimeMs": 1790000000000,
+        "payload": {
+          "playerId": "p1",
+          "x": 15,
+          "y": 3
+        }
+      }
+    },
+    {
+      "name": "control message with sequence",
+      "schema": "websocket/server",
+      "value": {
+        "version": 1,
+        "type": "ACK",
+        "requestId": "a1",
+        "serverTimeMs": 1790000000000,
+        "sequence": 1,
+        "payload": {
+          "commandType": "READY",
+          "appliedTick": 0
+        }
+      }
+    },
+    {
+      "name": "draw with winner",
+      "schema": "game/Result",
+      "value": {
+        "outcome": "DRAW",
+        "winnerId": "p1",
+        "reason": "TIME_LIMIT",
+        "finishedAtTick": 3600
+      }
+    },
+    {
+      "name": "win without winner",
+      "schema": "game/Result",
+      "value": {
+        "outcome": "WIN",
+        "winnerId": null,
+        "reason": "SOLE_SURVIVOR",
+        "finishedAtTick": 1
+      }
+    },
+    {
+      "name": "bad map row length",
+      "schema": "game/Map",
+      "value": {
+        "mapId": "classic-01",
+        "rows": [
+          "###############",
+          "##",
+          "###############",
+          "###############",
+          "###############",
+          "###############",
+          "###############",
+          "###############",
+          "###############",
+          "###############",
+          "###############",
+          "###############",
+          "###############"
+        ]
+      }
+    },
+    {
+      "name": "one-player room",
+      "schema": "rest/CreateGame",
+      "value": {
+        "maxPlayers": 1
+      }
+    },
+    {
+      "name": "client chosen map",
+      "schema": "rest/CreateGame",
+      "value": {
+        "maxPlayers": 2,
+        "mapId": "classic-01"
+      }
+    },
+    {
+      "name": "extra guest secret in JSON",
+      "schema": "rest/GuestSession",
+      "value": {
+        "playerId": "p1",
+        "expiresAtMs": 1790000000000,
+        "token": "secret"
+      }
+    },
+    {
+      "name": "unknown room status",
+      "schema": "rest/RoomSummary",
+      "value": {
+        "gameId": "ABCD2345",
+        "status": "STARTING",
+        "maxPlayers": 2,
+        "players": []
+      }
+    }
+  ]
+}

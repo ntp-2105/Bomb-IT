@@ -1,0 +1,244 @@
+openapi: 3.1.0
+info:
+  title: Bomb-It v1 REST API
+  version: "1"
+  description: >-
+    Same-origin guest and room API. The server validates Origin on mutations,
+    issues an opaque bombit_guest cookie, and keeps all state in one process.
+servers:
+  - url: /
+paths:
+  /api/guest-sessions:
+    post:
+      operationId: createOrRenewGuestSession
+      summary: Create a guest or renew the same valid identity
+      description: >-
+        A valid cookie is reused without token rotation, with expiry renewed
+        to 24 hours from this call. An expired or unknown cookie creates a
+        new identity. The expected Origin is required; issuance is rate-limited.
+      parameters:
+        - $ref: "#/components/parameters/Origin"
+      responses:
+        "200":
+          description: Existing guest renewed with the same token
+          headers:
+            Set-Cookie:
+              $ref: "#/components/headers/GuestCookie"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GuestSession"
+        "201":
+          description: New guest identity
+          headers:
+            Set-Cookie:
+              $ref: "#/components/headers/GuestCookie"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GuestSession"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "503":
+          $ref: "#/components/responses/Capacity"
+  /api/games:
+    post:
+      operationId: createGame
+      summary: Create an empty room without joining it
+      security:
+        - guestCookie: []
+      parameters:
+        - $ref: "#/components/parameters/Origin"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateGame"
+      responses:
+        "201":
+          description: Room created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomSummary"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "503":
+          $ref: "#/components/responses/Capacity"
+  /api/games/{gameId}:
+    get:
+      operationId: getGame
+      summary: Read room status and roster
+      security:
+        - guestCookie: []
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/GameId"
+      responses:
+        "200":
+          description: Room summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomSummary"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+components:
+  securitySchemes:
+    guestCookie:
+      type: apiKey
+      in: cookie
+      name: bombit_guest
+  parameters:
+    Origin:
+      name: Origin
+      in: header
+      required: true
+      description: Must match the configured public game origin exactly.
+      schema:
+        type: string
+        format: uri
+  headers:
+    GuestCookie:
+      description: >-
+        bombit_guest=<opaque>; Max-Age=86400; Path=/; HttpOnly; Secure;
+        SameSite=Strict. The token is never returned in a JSON body.
+      schema:
+        type: string
+  schemas:
+    GameId:
+      type: string
+      pattern: "^[A-HJKMNP-TV-Z2-9]{8}$"
+    OpaqueId:
+      type: string
+      minLength: 1
+      maxLength: 64
+    GuestSession:
+      type: object
+      required: [playerId, expiresAtMs]
+      properties:
+        playerId:
+          $ref: "#/components/schemas/OpaqueId"
+        expiresAtMs:
+          type: integer
+          minimum: 0
+          description: Unix epoch milliseconds.
+      additionalProperties: false
+    CreateGame:
+      type: object
+      required: [maxPlayers]
+      properties:
+        maxPlayers:
+          type: integer
+          minimum: 2
+          maximum: 4
+      additionalProperties: false
+    RoomPlayer:
+      type: object
+      required: [playerId, slot, ready, connected]
+      properties:
+        playerId:
+          $ref: "#/components/schemas/OpaqueId"
+        slot:
+          type: integer
+          minimum: 1
+          maximum: 4
+        ready:
+          type: boolean
+        connected:
+          type: boolean
+      additionalProperties: false
+    RoomSummary:
+      type: object
+      required: [gameId, status, maxPlayers, players]
+      properties:
+        gameId:
+          $ref: "#/components/schemas/GameId"
+        status:
+          type: string
+          enum: [WAITING, RUNNING, FINISHED]
+        maxPlayers:
+          type: integer
+          minimum: 2
+          maximum: 4
+        players:
+          type: array
+          maxItems: 4
+          items:
+            $ref: "#/components/schemas/RoomPlayer"
+      additionalProperties: false
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          enum:
+            - INVALID_REQUEST
+            - UNAUTHORIZED
+            - ORIGIN_FORBIDDEN
+            - GAME_NOT_FOUND
+            - RATE_LIMITED
+            - SERVER_CAPACITY
+        message:
+          type: string
+          minLength: 1
+          maxLength: 256
+      additionalProperties: false
+  responses:
+    BadRequest:
+      description: Invalid JSON, field, value, or room code
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: Missing or expired guest session
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Forbidden:
+      description: Missing or foreign Origin
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Unknown or expired room
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    RateLimited:
+      description: Request rate exceeded
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Capacity:
+      description: Server room or session capacity reached
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"

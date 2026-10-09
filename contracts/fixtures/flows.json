@@ -1,0 +1,354 @@
+{
+  "createJoinStart": {
+    "createRequest": {
+      "maxPlayers": 2
+    },
+    "createdRoom": {
+      "gameId": "ABCD2345",
+      "status": "WAITING",
+      "maxPlayers": 2,
+      "players": []
+    },
+    "joins": [
+      {
+        "version": 1,
+        "type": "JOIN_GAME",
+        "requestId": "join-1",
+        "payload": {
+          "gameId": "ABCD2345"
+        }
+      },
+      {
+        "version": 1,
+        "type": "JOIN_GAME",
+        "requestId": "join-2",
+        "payload": {
+          "gameId": "ABCD2345"
+        }
+      }
+    ],
+    "ready": [
+      {
+        "version": 1,
+        "type": "READY",
+        "requestId": "ready-1",
+        "payload": {}
+      },
+      {
+        "version": 1,
+        "type": "READY",
+        "requestId": "ready-2",
+        "payload": {}
+      }
+    ],
+    "start": {
+      "version": 1,
+      "type": "GAME_STARTED",
+      "gameId": "ABCD2345",
+      "sequence": 5,
+      "tick": 0,
+      "serverTimeMs": 1790000000000,
+      "payload": {
+        "startedAtTick": 0
+      }
+    }
+  },
+  "duplicateRequest": {
+    "original": {
+      "version": 1,
+      "type": "PLACE_BOMB",
+      "requestId": "plant-1",
+      "payload": {}
+    },
+    "retry": {
+      "version": 1,
+      "type": "PLACE_BOMB",
+      "requestId": "plant-1",
+      "payload": {}
+    },
+    "firstOutcome": {
+      "version": 1,
+      "type": "ACK",
+      "requestId": "plant-1",
+      "serverTimeMs": 1790000000000,
+      "payload": {
+        "commandType": "PLACE_BOMB",
+        "appliedTick": 1
+      }
+    },
+    "retryOutcome": {
+      "version": 1,
+      "type": "ACK",
+      "requestId": "plant-1",
+      "serverTimeMs": 1790000000000,
+      "payload": {
+        "commandType": "PLACE_BOMB",
+        "appliedTick": 1
+      }
+    },
+    "conflict": {
+      "version": 1,
+      "type": "PLAYER_MOVE",
+      "requestId": "plant-1",
+      "payload": {
+        "direction": "UP"
+      }
+    },
+    "conflictOutcome": {
+      "version": 1,
+      "type": "ERROR",
+      "requestId": "plant-1",
+      "serverTimeMs": 1790000000000,
+      "payload": {
+        "code": "REQUEST_ID_CONFLICT",
+        "message": "Request ID was already used."
+      }
+    }
+  },
+  "sequenceGap": {
+    "snapshotSequence": 5,
+    "received": {
+      "version": 1,
+      "type": "BOMB_PLACED",
+      "gameId": "ABCD2345",
+      "sequence": 7,
+      "tick": 1,
+      "serverTimeMs": 1790000000050,
+      "payload": {
+        "bomb": {
+          "bombId": "b1",
+          "ownerId": "p1",
+          "x": 1,
+          "y": 3,
+          "explodeAtTick": 61,
+          "range": 2
+        }
+      }
+    },
+    "resync": {
+      "version": 1,
+      "type": "RESYNC",
+      "requestId": "resync-1",
+      "payload": {}
+    },
+    "replacementSnapshot":
+    {
+      "version": 1,
+      "type": "GAME_STATE",
+      "gameId": "ABCD2345",
+      "sequence": 7,
+      "serverTimeMs": 1790000000050,
+      "payload": {
+        "gameId": "ABCD2345",
+        "status": "RUNNING",
+        "maxPlayers": 2,
+        "config": {
+          "gridWidth": 15,
+          "gridHeight": 13,
+          "tickMs": 50,
+          "movementTicks": 3,
+          "bombFuseTicks": 60,
+          "explosionRange": 2,
+          "maxBombs": 3,
+          "blastVisualTicks": 6,
+          "matchDurationTicks": 3600
+        },
+        "map": {
+          "mapId": "classic-01",
+          "rows": [
+            "###############",
+            "#.....+...+...#",
+            "#.#.#.#.#.#.#.#",
+            "#.+...+...+...#",
+            "#.#.#.#.#.#.#.#",
+            "#.+...+...+...#",
+            "#.#.#.#.#.#.#.#",
+            "#.+...+...+...#",
+            "#.#.#.#.#.#.#.#",
+            "#.+...+...+...#",
+            "#.#.#.#.#.#.#.#",
+            "#.....+...+...#",
+            "###############"
+          ]
+        },
+        "players": [
+          {
+            "playerId": "p1",
+            "slot": 1,
+            "x": 1,
+            "y": 3,
+            "alive": true,
+            "ready": true,
+            "connected": true
+          },
+          {
+            "playerId": "p2",
+            "slot": 2,
+            "x": 13,
+            "y": 1,
+            "alive": true,
+            "ready": true,
+            "connected": true
+          }
+        ],
+        "bombs": [
+          {
+            "bombId": "b1",
+            "ownerId": "p1",
+            "x": 1,
+            "y": 3,
+            "explodeAtTick": 61,
+            "range": 2
+          }
+        ],
+        "tick": 1,
+        "result": null
+      }
+    }
+  },
+  "reconnect": {
+    "retainedForMs": 30000,
+    "sameGuestJoin": {
+      "version": 1,
+      "type": "JOIN_GAME",
+      "requestId": "rejoin-1",
+      "payload": {
+        "gameId": "ABCD2345"
+      }
+    },
+    "connectionEvent": {
+      "version": 1,
+      "type": "PLAYER_CONNECTION_CHANGED",
+      "gameId": "ABCD2345",
+      "sequence": 5,
+      "tick": 0,
+      "serverTimeMs": 1790000000000,
+      "payload": {
+        "playerId": "p1",
+        "connected": true
+      }
+    },
+    "snapshotFixture": "replay.initial"
+  },
+  "expiredIdentity": {
+    "oldPlayerId": "p1",
+    "upgradeStatus": 401,
+    "error": {
+      "code": "UNAUTHORIZED",
+      "message": "Guest session expired."
+    },
+    "newSession": {
+      "playerId": "p3",
+      "expiresAtMs": 1790086400000
+    },
+    "oldSlotReclaimable": false
+  },
+  "chainReaction": {
+      "triggerBomb": {
+        "bombId": "b1",
+        "ownerId": "p1",
+        "x": 1,
+        "y": 3,
+        "explodeAtTick": 61,
+        "range": 2
+      },
+      "chainedBomb": {
+        "bombId": "b2",
+        "ownerId": "p2",
+        "x": 1,
+        "y": 4,
+        "explodeAtTick": 100,
+        "range": 2
+      },
+      "events": [
+        {
+          "version": 1,
+          "type": "BOMB_EXPLODED",
+          "gameId": "ABCD2345",
+          "sequence": 8,
+          "tick": 61,
+          "serverTimeMs": 1790000003050,
+          "payload": {
+            "bombId": "b1",
+            "affectedCells": [
+              {
+                "x": 1,
+                "y": 3
+              },
+              {
+                "x": 1,
+                "y": 4
+              }
+            ],
+            "visualUntilTick": 67
+          }
+        },
+        {
+          "version": 1,
+          "type": "BOMB_EXPLODED",
+          "gameId": "ABCD2345",
+          "sequence": 9,
+          "tick": 61,
+          "serverTimeMs": 1790000003050,
+          "payload": {
+            "bombId": "b2",
+            "affectedCells": [
+              {
+                "x": 1,
+                "y": 4
+              },
+              {
+                "x": 1,
+                "y": 3
+              }
+            ],
+            "visualUntilTick": 67
+          }
+        }
+      ]
+    },
+    "simultaneousDeathDraw": {
+      "events": [
+        {
+          "version": 1,
+          "type": "PLAYER_DIED",
+          "gameId": "ABCD2345",
+          "sequence": 10,
+          "tick": 61,
+          "serverTimeMs": 1790000003050,
+          "payload": {
+            "playerId": "p1",
+            "reason": "BLAST"
+          }
+        },
+        {
+          "version": 1,
+          "type": "PLAYER_DIED",
+          "gameId": "ABCD2345",
+          "sequence": 11,
+          "tick": 61,
+          "serverTimeMs": 1790000003050,
+          "payload": {
+            "playerId": "p2",
+            "reason": "BLAST"
+          }
+        },
+        {
+          "version": 1,
+          "type": "GAME_FINISHED",
+          "gameId": "ABCD2345",
+          "sequence": 12,
+          "tick": 61,
+          "serverTimeMs": 1790000003050,
+          "payload": {
+            "result": {
+              "outcome": "DRAW",
+              "winnerId": null,
+              "reason": "ALL_ELIMINATED",
+              "finishedAtTick": 61
+            }
+          }
+        }
+      ]
+    }
+}

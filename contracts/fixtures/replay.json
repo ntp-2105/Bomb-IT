@@ -1,0 +1,247 @@
+{
+  "name": "snapshot-plus-six-deltas",
+  "initial": {
+    "version": 1,
+    "type": "GAME_STATE",
+    "gameId": "ABCD2345",
+    "sequence": 5,
+    "serverTimeMs": 1790000000000,
+    "payload": {
+      "gameId": "ABCD2345",
+      "status": "RUNNING",
+      "maxPlayers": 2,
+      "config": {
+        "gridWidth": 15,
+        "gridHeight": 13,
+        "tickMs": 50,
+        "movementTicks": 3,
+        "bombFuseTicks": 60,
+        "explosionRange": 2,
+        "maxBombs": 3,
+        "blastVisualTicks": 6,
+        "matchDurationTicks": 3600
+      },
+      "map": {
+        "mapId": "classic-01",
+        "rows": [
+          "###############",
+          "#.....+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.+...+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.+...+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.+...+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.+...+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.....+...+...#",
+          "###############"
+        ]
+      },
+      "players": [
+        {
+          "playerId": "p1",
+          "slot": 1,
+          "x": 1,
+          "y": 2,
+          "alive": true,
+          "ready": true,
+          "connected": true
+        },
+        {
+          "playerId": "p2",
+          "slot": 2,
+          "x": 13,
+          "y": 1,
+          "alive": true,
+          "ready": true,
+          "connected": true
+        }
+      ],
+      "bombs": [],
+      "tick": 0,
+      "result": null
+    }
+  },
+  "events": [
+    {
+      "version": 1,
+      "type": "PLAYER_MOVED",
+      "gameId": "ABCD2345",
+      "sequence": 6,
+      "tick": 1,
+      "serverTimeMs": 1790000000050,
+      "payload": {
+        "playerId": "p1",
+        "x": 1,
+        "y": 3
+      }
+    },
+    {
+      "version": 1,
+      "type": "BOMB_PLACED",
+      "gameId": "ABCD2345",
+      "sequence": 7,
+      "tick": 1,
+      "serverTimeMs": 1790000000050,
+      "payload": {
+        "bomb": {
+          "bombId": "b1",
+          "ownerId": "p1",
+          "x": 1,
+          "y": 3,
+          "explodeAtTick": 61,
+          "range": 2
+        }
+      }
+    },
+    {
+      "version": 1,
+      "type": "BOMB_EXPLODED",
+      "gameId": "ABCD2345",
+      "sequence": 8,
+      "tick": 61,
+      "serverTimeMs": 1790000003050,
+      "payload": {
+        "bombId": "b1",
+        "affectedCells": [
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 2,
+            "y": 3
+          }
+        ],
+        "visualUntilTick": 67
+      }
+    },
+    {
+      "version": 1,
+      "type": "CELL_DESTROYED",
+      "gameId": "ABCD2345",
+      "sequence": 9,
+      "tick": 61,
+      "serverTimeMs": 1790000003050,
+      "payload": {
+        "x": 2,
+        "y": 3
+      }
+    },
+    {
+      "version": 1,
+      "type": "PLAYER_DIED",
+      "gameId": "ABCD2345",
+      "sequence": 10,
+      "tick": 61,
+      "serverTimeMs": 1790000003050,
+      "payload": {
+        "playerId": "p1",
+        "reason": "BLAST"
+      }
+    },
+    {
+      "version": 1,
+      "type": "GAME_FINISHED",
+      "gameId": "ABCD2345",
+      "sequence": 11,
+      "tick": 61,
+      "serverTimeMs": 1790000003050,
+      "payload": {
+        "result": {
+          "outcome": "WIN",
+          "winnerId": "p2",
+          "reason": "SOLE_SURVIVOR",
+          "finishedAtTick": 61
+        }
+      }
+    }
+  ],
+  "expected": {
+    "version": 1,
+    "type": "GAME_STATE",
+    "gameId": "ABCD2345",
+    "sequence": 11,
+    "serverTimeMs": 1790000003050,
+    "payload": {
+      "gameId": "ABCD2345",
+      "status": "FINISHED",
+      "maxPlayers": 2,
+      "config": {
+        "gridWidth": 15,
+        "gridHeight": 13,
+        "tickMs": 50,
+        "movementTicks": 3,
+        "bombFuseTicks": 60,
+        "explosionRange": 2,
+        "maxBombs": 3,
+        "blastVisualTicks": 6,
+        "matchDurationTicks": 3600
+      },
+      "map": {
+        "mapId": "classic-01",
+        "rows": [
+          "###############",
+          "#.....+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.....+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.+...+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.+...+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.+...+...+...#",
+          "#.#.#.#.#.#.#.#",
+          "#.....+...+...#",
+          "###############"
+        ]
+      },
+      "players": [
+        {
+          "playerId": "p1",
+          "slot": 1,
+          "x": 1,
+          "y": 3,
+          "alive": false,
+          "ready": true,
+          "connected": true
+        },
+        {
+          "playerId": "p2",
+          "slot": 2,
+          "x": 13,
+          "y": 1,
+          "alive": true,
+          "ready": true,
+          "connected": true
+        }
+      ],
+      "bombs": [],
+      "tick": 61,
+      "result": {
+        "outcome": "WIN",
+        "winnerId": "p2",
+        "reason": "SOLE_SURVIVOR",
+        "finishedAtTick": 61
+      }
+    }
+  }
+}

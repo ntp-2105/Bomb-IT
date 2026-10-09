@@ -1,3 +1,3 @@
 # Game Contract
 
-Reserved for shared game constants and rules that cross the client/server boundary. Keep authoritative behavior in the server implementation and presentation behavior in the client.
+`state.schema.json` defines v1 game state and fixed configuration values. `../../CONTRACT.md` specifies observable rules, while `../fixtures/map.json` contains the canonical map.
